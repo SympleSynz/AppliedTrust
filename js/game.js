@@ -61,6 +61,8 @@ var gameState = function (game){
     this.asteroidGroup;
     
     this.tf_lives;
+    this.tf_livesLabel;
+    this.tf_scoreLabel
     this.tf_score;
     
     this.backgroundSprite;
@@ -89,6 +91,7 @@ gameState.prototype = {
         this.asteroidsCount = asteroidProperties.startingAsteroids;
         this.shipLives = shipProperties.startingLives;
         this.score = 0;
+        this.time = 0;
     },
     
     create: function () {
@@ -105,8 +108,16 @@ gameState.prototype = {
         
         if (!this.shipIsInvulnerable) {
             game.physics.arcade.overlap(this.shipSprite, this.asteroidGroup, this.asteroidCollision, null, this);
-            this.updateScore(1);
-        }
+            if (this.time >= 100 && this.shipLives > 0)
+	        {
+	        	this.updateScore(1);
+	        	this.time = 0;
+	        }
+	        else
+	        {
+	        	this.time += 1;   
+	        }
+	    }
     },
     
     initGraphics: function () {
@@ -118,9 +129,15 @@ gameState.prototype = {
         
         this.asteroidGroup = game.add.group();
         
-        this.tf_lives = game.add.text(20, 10, shipProperties.startingLives, fontAssets.counterFontStyle);
+        this.tf_lives = game.add.text(20, 30, shipProperties.startingLives, fontAssets.counterFontStyle);
+
+        this.tf_livesLabel = game.add.text(20, 10, "Lives", fontAssets.counterFontStyle);
         
-        this.tf_score = game.add.text(gameProperties.screenWidth - 20, 10, "0", fontAssets.counterFontStyle);
+        this.tf_scoreLabel = game.add.text(gameProperties.screenWidth - 20, 10, "Score", fontAssets.counterFontStyle);
+        this.tf_scoreLabel.align = 'right';
+        this.tf_scoreLabel.anchor.set(1, 0);
+
+        this.tf_score = game.add.text(gameProperties.screenWidth - 20, 30, "0", fontAssets.counterFontStyle);
         this.tf_score.align = 'right';
         this.tf_score.anchor.set(1, 0);
                 
