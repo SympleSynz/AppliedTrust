@@ -2,7 +2,7 @@ var gameProperties = {
     screenWidth: 640,
     screenHeight: 480,
 
-    delayToStartLevel: 3,
+    delayToStartLevel: 2,
     padding: 30,
 };
 
@@ -37,8 +37,8 @@ var shipProperties = {
 };
 
 var asteroidProperties = {
-    startingAsteroids: 10,
-    maxAsteroids: 20,
+    startingAsteroids: 6,
+    maxAsteroids: 30,
     incrementAsteroids: 2,
     
     asteroidLarge: { minVelocity: 50, maxVelocity: 150, minAngularVelocity: 0, maxAngularVelocity: 200, score: 20, nextSize: graphicAssets.asteroidMedium.name, pieces: 2, explosion:'explosionLarge' },
@@ -138,6 +138,10 @@ gameState.prototype = {
 	        {
 	        	this.updateScore(1);
 	        	this.time = 0;
+	        	if (this.score % 3 == 0)
+	        	{
+	        		this.nextLevel();
+	        	}
 	        }
 	        /*else if (this.shipLives == 0)
 	        {
@@ -333,7 +337,7 @@ gameState.prototype = {
     },
     
     nextLevel: function () {
-        this.asteroidGroup.removeAll(true);
+        //this.asteroidGroup.removeAll(true);
         
         if (this.asteroidsCount < asteroidProperties.maxAsteroids) {
             this.asteroidsCount += asteroidProperties.incrementAsteroids;
