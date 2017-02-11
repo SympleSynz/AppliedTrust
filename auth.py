@@ -19,25 +19,19 @@ def do_adduser(self, line):
 	username = line[0]
 	global args
 
-	#If user is the admin, then proceed to add user
-	if args.user=="admin":
-		with open(args.home + '/users', 'r') as file:
-			userRaw = file.readlines()
-		for user in userRaw:
-			user = user.strip('\n').split(':')
-			if user[0] == username:
-				log_event('failure', "User exists")
-				return
-		journalEntry = user_create(username)
-		with open(args.home+"/users", "a") as usersFile:
-			usersFile.write(journalEntry)
-		log_event('success', "User: %s added to system" % username)
-		return
+	with open(args.home + '/users', 'r') as file:
+		userRaw = file.readlines()
+	for user in userRaw:
+		user = user.strip('\n').split(':')
+		if user[0] == username:
+			log_event('failure', "User exists")
+			return
+	journalEntry = user_create(username)
+	with open(args.home+"/users", "a") as usersFile:
+		usersFile.write(journalEntry)
+	log_event('success', "User: %s added to system" % username)
+	return
 
-	#Not the admin
-	else:
-		log_event('unauthorized', "Not authorized to add users")
-		return
 
 def do_setpassword(self, line):
 	line = line.split(' ')
@@ -77,20 +71,7 @@ def salt_generator():
 	return binascii.hexlify(os.urandom(16))
 
 #Confirms user password and returns the salt and hash of the password
-def hash_generator():
-	userPass = "1"
-	userPassConfirm = "2"
-	while True:
-		print "Please type new password"
-		userPass = getpass.getpass()
-		#userPass = prompt.prompt
-		print "Retype password for confirmation"
-		userPassConfirm = getpass.getpass()		
-		#userPassConfirm = prompt.prompt
-		if userPass != userPassConfirm:
-			print "\nPassword mismatch. Please try again..."
-		else:
-			break
+def hash_generator(userPass):
 	iv = salt_generator()
 	log_event('info', 'Successfully generated password hash')
 	return iv, password_hasher(iv, userPass)
@@ -132,18 +113,8 @@ def force_file(file_path):
 def initialize_system():
 	global args
 	userChoice = ""
-	while userChoice not in ["y", "yes", "n", "no"]:
-		userChoice = raw_input("User file not found. Would you like to initialize file protector? [y/n]\n").lower()
-	if userChoice in ["n", "no"]:
-		sys.exit(0)
-	else:
-		directory_maker("/data")
-		log_event('info', 'Created the data directory in home')	
-		journalEntry = user_create('admin')
-		with open(args.home+"/users", "a") as usersFile:
-			usersFile.write(journalEntry)
-
-		print "admin account successfully created. Please log back in."
+	directory_maker("/data")
+	log_event('info', 'Created the data directory in home')	
 
 #Handles user authentication
 def authenticate():
@@ -160,7 +131,6 @@ def authenticate():
 				log_event('info', "Successful login")
 			else:
 				log_event('failure', "Authentication failure")
-				sys.exit(1)
 
 def log_event(eventStatus, eventDescription):
 	global args
