@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+from flask import Flask
+
+
 from Crypto.Cipher import AES
 from Crypto import Random
 
@@ -13,7 +16,13 @@ import time
 import sys
 import os
 
+app = Flask(__name__)
 
+@app.route('/')
+def hello_world():
+	return app.send_static_file('login.html')
+
+'''
 def do_adduser(self, line):
 	line = line.split(' ')
 	username = line[0]
@@ -160,4 +169,4 @@ def log_event(eventStatus, eventDescription):
 ################################################################
 
 logging.basicConfig(filename='auth.log', filemode='a', level=logging.DEBUG)
-
+'''
