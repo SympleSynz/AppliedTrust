@@ -318,17 +318,20 @@ gameState.prototype = {
 
 var mainState = function(game){
     this.tf_start;
+    this.key_start;
 };
 
 mainState.prototype = {
     create: function () {
-        var startInstructions = 'Click on Screen to Start\n\nControls:\n\nUP Arrow Key to Move Forward.\n\nLEFT or RIGHT Arrow Keys to Make Turns.';
+        var startInstructions = '~~ ISS DANGER ~~\n\n\nClick SPACEBAR to Start\n\n\nControls:\n\nUP Arrow Key to Move Forward.\nLEFT or RIGHT Arrow Keys to Make Turns.';
         
         this.tf_start = game.add.text(game.world.centerX, game.world.centerY, startInstructions, fontAssets.counterFontStyle);
         this.tf_start.align = 'center';
         this.tf_start.anchor.set(0.5, 0.5);
         
-        game.input.onDown.addOnce(this.startGame, this);
+        this.key_start = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        this.key_start.onDown.addOnce(this.startGame,this);
+        //game.input.onDown.addOnce(this.startGame, this);
     },
     
     startGame: function () {
