@@ -3,9 +3,6 @@
 from Crypto.Cipher import AES
 from Crypto import Random
 
-import cmd2 as cmd
-
-import argparse
 import binascii
 import datetime
 import hashlib
@@ -18,7 +15,6 @@ import os
 
 
 def do_adduser(self, line):
-	'adduser <new username>'
 	line = line.split(' ')
 	username = line[0]
 	global args
@@ -44,7 +40,6 @@ def do_adduser(self, line):
 		return
 
 def do_setpassword(self, line):
-	'setpassword'
 	line = line.split(' ')
 	global args
 	with open(args.home + '/users', 'r') as file:
@@ -194,35 +189,5 @@ def log_event(eventStatus, eventDescription):
 # Main
 ################################################################
 
-logging.basicConfig(filename='fileprotector.log', filemode='a', level=logging.DEBUG)
-
-#Parse command line arguments at runtime and store them
-parser = argparse.ArgumentParser(prog="fileprotector", description="File encryption service")
-parser.add_argument('-u', '--user', metavar='<Username>', help="Username", default="")
-parser.add_argument('-p', '--password', metavar='<Password>', help="Password", default="")
-parser.add_argument('-d', '--home', metavar='<Path to home directory>', help="Path to home directory", default=os.getcwd())
-args = parser.parse_args()
-
-#Clear system arguments to avoid interference with main shell
-del sys.argv[1:]
-
-#Verify specified home directory exists
-if not os.path.isdir(args.home):
-	log_event('error', "Home directory: %s does not exist" % args.home)
-	sys.exit(1)
-
-#If users file doesn't exist, then initialize fileprotector system
-if not os.path.exists(args.home + "/users"):
-	initialize_system()
-	sys.exit(0)
-
-else:
-	if (args.user == "") and (args.password == ""):
-		parser.print_help() 
-		log_event('info', 'No credentials provided')
-	else:
-		authenticate()
-		prompt = encryptorCLI()
-		prompt.prompt = 'FileProtector > '
-		prompt.cmdloop()
+logging.basicConfig(filename='auth.log', filemode='a', level=logging.DEBUG)
 
