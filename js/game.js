@@ -100,6 +100,32 @@ gameState.prototype = {
         this.initKeyboard();
         this.resetAsteroids();
     },
+	
+/*	post_to_url: function (path, params) {
+	method = 'POST';
+
+	var form = document.createElement('form');
+        		
+    // Move the submit function to another variable
+    // so that it doesn't get overwritten.
+    form._submit_function_ = form.submit;
+
+    form.setAttribute('method', method);
+    form.setAttribute('action', path);
+    form.setAttribute('target', '_blank');
+
+    for(var key in params) {
+        var hiddenField = document.createElement('input');
+        hiddenField.setAttribute('type', 'hidden');
+        hiddenField.setAttribute('name', key);
+        hiddenField.setAttribute('value', params[key]);
+
+        form.appendChild(hiddenField);
+    }
+
+    document.body.appendChild(form);
+    form._submit_function_(); // Call the renamed function.
+	},*/
 
     update: function () {
         this.checkPlayerInput();
@@ -113,6 +139,11 @@ gameState.prototype = {
 	        	this.updateScore(1);
 	        	this.time = 0;
 	        }
+	        /*else if (this.shipLives == 0)
+	        {
+	        	this.post_to_url('/score/', {score: this.score});
+
+	        }*/
 	        else
 	        {
 	        	this.time += 1;   
